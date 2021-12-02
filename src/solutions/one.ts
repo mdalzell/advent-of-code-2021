@@ -8,13 +8,11 @@ const readInput = (filePath: string) => {
 const dayOnePartOne = () => {
     const depths = readInput("input/day-one.txt");
 
-    let increaseCount = 0;
-    depths.reduce((previous, current) => {
-        if (+current > +previous) increaseCount++;
-        return current;
-    })
+    const result = depths.reduce((acc, current, index, arr) => {
+        return +current > +arr[index - 1] ? acc + 1 : acc
+    }, 0)
 
-    console.log("Day One - Part One:", increaseCount)
+    console.log("Day One - Part One:", result)
 }
 
 const dayOnePartTwo = () => {
@@ -23,12 +21,11 @@ const dayOnePartTwo = () => {
     let increaseCount = 0;
     const depthWindow: number[] = [];
     depths.forEach((depth) => {
-        const current = depthWindow.reduce((a, b) => a + b, 0);
         depthWindow.push(+depth)
+
         if (depthWindow.length === 4){
-            depthWindow.shift();
-            const next = depthWindow.reduce((a, b) => a + b, 0)
-            if (next > current) increaseCount++;
+            const removed = depthWindow.shift();
+            if (+depth > +removed!) increaseCount++;
         }
     })
 
