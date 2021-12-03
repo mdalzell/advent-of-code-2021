@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Advent of Code 2021",
   "scripts": {
-    "one": "ts-node src/solutions/one.ts"
+    "one": "ts-node src/solutions/one.ts",
+    "two": "ts-node src/solutions/two.ts"
+
   },
   "repository": {
     "type": "git",
