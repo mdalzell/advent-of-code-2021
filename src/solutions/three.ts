@@ -7,14 +7,14 @@ type CharDictionary = {
     }
 }
 
-const dayThree = (lines: string[], defaultValue: string = "1") => {
+const buildCharDictionary = (values: string[]) => {
     const charDictionary: CharDictionary = {};
-    const numberOfDigits = lines[0].length;
+    const numberOfDigits = values[0].length;
     for (let i = 0; i < numberOfDigits; i++){
         charDictionary[i] = { 0: 0, 1: 0 }
     }
 
-    lines.forEach((line) => {
+    values.forEach((line) => {
         for(let i = 0; i < line.length; i++){
             const currentIndexValues = charDictionary[i]
             if (line[i] === "0") currentIndexValues[0]++
@@ -22,50 +22,62 @@ const dayThree = (lines: string[], defaultValue: string = "1") => {
         }
     })
 
-    let gammaRate = ""
-    let epsilonRate = ""
+    return charDictionary;
+}
 
-    for (let i = 0; i < numberOfDigits; i++){
-        const currentIndexValues = charDictionary[i]
-
-        if (currentIndexValues[1] > currentIndexValues[0]){
-            gammaRate += "1"
-            epsilonRate += "0"
-        }
-        else if (currentIndexValues[0] > currentIndexValues[1]) {
-            gammaRate += "0"
-            epsilonRate += "1"
-        }
-        else {
-            gammaRate += defaultValue
-            epsilonRate += defaultValue
-        }
+const getMostCommonValue = (counts : {0: number, 1: number}) => {
+    if (counts[0] > counts[1]){
+        return "0"
+    }
+    else if (counts[1] > counts[0]){
+        return "1"
     }
 
-    return { gammaRate, epsilonRate }
+    return "1";
+}
+
+const getLeastCommonValue = (counts : {0: number, 1: number}) => {
+    if (counts[0] < counts[1]){
+        return "0"
+    }
+    else if (counts[1] < counts[0]){
+        return "1"
+    }
+
+    return "0";
+}
+
+const calculateOxygenGeneratorRating = (values: string[], currentIndex: number): string => {
+    if (values.length === 1) return values[0]
+    
+    const charDictionary = buildCharDictionary(values);
+    const filteredLines = values.filter((line) => line[currentIndex] === getMostCommonValue(charDictionary[currentIndex]))
+    return calculateOxygenGeneratorRating(filteredLines, currentIndex + 1)
+}
+
+const calculateCO2ScrubberRating = (values: string[], currentIndex: number): string => {
+    if (values.length === 1) return values[0]
+    
+    const charDictionary = buildCharDictionary(values);
+    const filteredLines = values.filter((line) => line[currentIndex] === getLeastCommonValue(charDictionary[currentIndex]))
+    return calculateCO2ScrubberRating(filteredLines, currentIndex + 1)
 }
 
 const partOne = () => {
     const lines = readInput("input/day-three.txt")
-    const { gammaRate, epsilonRate } = dayThree(lines)
+    const charDictionary = buildCharDictionary(lines);
+
+    let gammaRate = ""
+    let epsilonRate = ""
+
+    for (let i = 0; i < lines[0].length; i++){
+        const currentIndexValues = charDictionary[i]
+        gammaRate += getMostCommonValue(currentIndexValues)
+        epsilonRate += getLeastCommonValue(currentIndexValues)
+    }
+
 
     return parseInt(gammaRate, 2) * parseInt(epsilonRate, 2)
-}
-
-const calculateOxygenGeneratorRating = (lines: string[], currentIndex: number): string => {
-    if (lines.length === 1) return lines[0]
-    
-    const { gammaRate } = dayThree(lines, "1")
-    const filteredLines = lines.filter((line) => line[currentIndex] === gammaRate[currentIndex])
-    return calculateOxygenGeneratorRating(filteredLines, currentIndex + 1)
-}
-
-const calculateCO2ScrubberRating = (lines: string[], currentIndex: number): string => {
-    if (lines.length === 1) return lines[0]
-    
-    const { epsilonRate } = dayThree(lines, "0")
-    const filteredLines = lines.filter((line) => line[currentIndex] === epsilonRate[currentIndex])
-    return calculateCO2ScrubberRating(filteredLines, currentIndex + 1)
 }
 
 const partTwo = () => {
