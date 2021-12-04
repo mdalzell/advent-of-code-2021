@@ -6,6 +6,7 @@
     "one": "ts-node src/solutions/one.ts",
     "two": "ts-node src/solutions/two.ts",
     "three": "ts-node src/solutions/three.ts",
+    "four": "ts-node src/solutions/day04.ts",
     "lint": "eslint . --ext .ts"
   },
   "repository": {
