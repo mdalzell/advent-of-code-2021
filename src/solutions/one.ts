@@ -1,9 +1,4 @@
-import { readFileSync } from "fs";
-
-const readInput = (filePath: string) => {
-    const data = readFileSync(filePath, 'utf-8');
-    return data.split(/\r?\n/)
-}
+import { readInput } from "../shared/io"
 
 const dayOnePartOne = () => {
     const depths = readInput("input/day-one.txt");

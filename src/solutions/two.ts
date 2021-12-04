@@ -1,9 +1,4 @@
-import { readFileSync } from "fs";
-
-const readInput = (filePath: string) => {
-    const data = readFileSync(filePath, 'utf-8');
-    return data.split(/\r?\n/)
-}
+import { readInput } from "../shared/io";
 
 type DirectionFn = (value: number) => void;
 
