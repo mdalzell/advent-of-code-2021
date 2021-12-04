@@ -68,16 +68,53 @@ const sumUnmarkedNumbers = (card: BingoCard) => {
   return unmarkedSum;
 };
 
-const day04 = () => {
+const updateCards = (bingoCards: BingoCard[], number: string) => {
+  let winningIndexes: number[] = [];
+  for (let i = 0; i < bingoCards.length; i++) {
+    if (markCardAndCheckForWin(bingoCards[i], number)) {
+      winningIndexes.push(i);
+    }
+  }
+
+  return winningIndexes;
+};
+
+const part1 = () => {
   const { bingoCards, drawnNumbers } = parseInput();
 
   for (const currentNumber of drawnNumbers) {
-    for (const currentCard of bingoCards) {
-      if (markCardAndCheckForWin(currentCard, currentNumber)) {
-        return parseInt(currentNumber) * sumUnmarkedNumbers(currentCard);
-      }
+    const winningIndexes = updateCards(bingoCards, currentNumber);
+    if (winningIndexes.length > 0) {
+      const winningIndex = winningIndexes.shift();
+      return parseInt(currentNumber) * sumUnmarkedNumbers(bingoCards[winningIndex!]);
     }
   }
 };
 
-console.log('Day 4 - Part 1', day04());
+const part2 = () => {
+  const { bingoCards, drawnNumbers } = parseInput();
+  const winners = [];
+
+  for (const currentNumber of drawnNumbers) {
+    const winningIndexes = updateCards(bingoCards, currentNumber);
+    if (winningIndexes) {
+      const indexesToRemove = [];
+      for (const winningIndex of winningIndexes) {
+        winners.push({ winningCard: bingoCards[winningIndex], winningNumber: currentNumber });
+        indexesToRemove.push(winningIndex);
+      }
+
+      for (let i = indexesToRemove.length - 1; i >= 0; i--) {
+        bingoCards.splice(indexesToRemove[i], 1);
+      }
+    }
+  }
+
+  const lastWinner = winners.pop();
+  if (!lastWinner) throw Error('Something went wrong - there were no winners');
+
+  return parseInt(lastWinner.winningNumber) * sumUnmarkedNumbers(lastWinner.winningCard);
+};
+
+console.log('Day 4 - Part 1', part1());
+console.log('Day 4 - Part 2', part2());
