@@ -4,7 +4,8 @@
   "description": "Advent of Code 2021",
   "scripts": {
     "one": "ts-node src/solutions/one.ts",
-    "two": "ts-node src/solutions/two.ts"
+    "two": "ts-node src/solutions/two.ts",
+    "three": "ts-node src/solutions/three.ts"
 
   },
   "repository": {
