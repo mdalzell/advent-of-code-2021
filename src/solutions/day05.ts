@@ -4,7 +4,7 @@ type PointIntersectionCountMap = {
   [point: string]: number;
 };
 
-const buildPointIntersectionCount = (input: string[]) => {
+const buildPointIntersectionCount = (input: string[], includeDiagonal: boolean) => {
   const pointIntersectionCount: PointIntersectionCountMap = {};
 
   for (const line of input) {
@@ -30,15 +30,29 @@ const buildPointIntersectionCount = (input: string[]) => {
           pointIntersectionCount[key] = 1;
         }
       }
+    } else if (includeDiagonal) {
+      const slope =
+        Math.min(startPointX, endPointX) === startPointX
+          ? (endPointY - startPointY) / (endPointX - startPointX)
+          : (startPointY - endPointY) / (startPointX - endPointX);
+      const b = startPointY - slope * startPointX;
+      for (let i = Math.min(startPointX, endPointX); i <= Math.max(startPointX, endPointX); i++) {
+        const key = `(${i},${slope * i + b})`;
+        if (pointIntersectionCount[key]) {
+          pointIntersectionCount[key]++;
+        } else {
+          pointIntersectionCount[key] = 1;
+        }
+      }
     }
   }
 
   return pointIntersectionCount;
 };
 
-const day05 = () => {
+const day05 = (includeDiagonal: boolean) => {
   const data = readInput('input/day05.txt');
-  const pointIntersectionCount = buildPointIntersectionCount(data);
+  const pointIntersectionCount = buildPointIntersectionCount(data, includeDiagonal);
 
   let intersectionCount = 0;
   for (const key in pointIntersectionCount) {
@@ -50,4 +64,5 @@ const day05 = () => {
   return intersectionCount;
 };
 
-console.log('Day 5 - Part 1', day05());
+console.log('Day 5 - Part 1', day05(false));
+console.log('Day 5 - Part 2', day05(true));
