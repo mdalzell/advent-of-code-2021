@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Advent of Code 2021",
   "scripts": {
-    "one": "ts-node src/solutions/one.ts",
-    "two": "ts-node src/solutions/two.ts",
-    "three": "ts-node src/solutions/three.ts",
+    "one": "ts-node src/solutions/day01.ts",
+    "two": "ts-node src/solutions/day02.ts",
+    "three": "ts-node src/solutions/day03.ts",
     "four": "ts-node src/solutions/day04.ts",
     "five": "ts-node src/solutions/day05.ts",
     "lint": "eslint . --ext .ts"

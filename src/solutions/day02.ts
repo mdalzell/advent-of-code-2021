@@ -3,7 +3,7 @@ import { readInput } from '../shared/io';
 type DirectionFn = (value: number) => void;
 
 const dayTwo = ({ onForward, onUp, onDown }: { onForward: DirectionFn; onUp: DirectionFn; onDown: DirectionFn }) => {
-  const lines = readInput('input/day-two.txt');
+  const lines = readInput('input/day02.txt');
 
   lines.forEach((line) => {
     const [direction, value] = line.split(' ');

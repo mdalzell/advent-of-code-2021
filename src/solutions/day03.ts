@@ -62,7 +62,7 @@ const calculateCO2ScrubberRating = (values: string[], currentIndex: number): str
 };
 
 const partOne = () => {
-  const lines = readInput('input/day-three.txt');
+  const lines = readInput('input/day03.txt');
   const charDictionary = buildCharDictionary(lines);
 
   let gammaRate = '';
@@ -78,7 +78,7 @@ const partOne = () => {
 };
 
 const partTwo = () => {
-  const lines = readInput('input/day-three.txt');
+  const lines = readInput('input/day03.txt');
   const oxygenGeneratorRating = calculateOxygenGeneratorRating(lines, 0);
   const cO2ScrubberRating = calculateCO2ScrubberRating(lines, 0);
 
