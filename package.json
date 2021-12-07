@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Advent of Code 2021",
   "scripts": {
-    "one": "ts-node src/solutions/day01.ts",
-    "two": "ts-node src/solutions/day02.ts",
-    "three": "ts-node src/solutions/day03.ts",
-    "four": "ts-node src/solutions/day04.ts",
-    "five": "ts-node src/solutions/day05.ts",
+    "01": "ts-node src/solutions/day01.ts",
+    "02": "ts-node src/solutions/day02.ts",
+    "03": "ts-node src/solutions/day03.ts",
+    "04": "ts-node src/solutions/day04.ts",
+    "05": "ts-node src/solutions/day05.ts",
     "06": "ts-node src/solutions/day06.ts",
     "lint": "eslint . --ext .ts"
   },
