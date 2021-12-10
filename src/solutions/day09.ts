@@ -23,19 +23,51 @@ const getLowPoints = (map: number[][]) => {
   return lowPoints;
 };
 
-type ReduceBuilderFn = (map: number[][]) => (acc: number, point: Point) => number;
+type ScanFn = (map: number[][], lowPoints: Point[]) => number;
 
-const part1: ReduceBuilderFn = (map: number[][]) => (acc, point) => {
-  const value = map[point.x][point.y];
-  return acc + +value + 1;
+const part1: ScanFn = (map: number[][], lowPoints: Point[]) => {
+  return lowPoints.reduce((acc, point) => {
+    const value = map[point.x][point.y];
+    return acc + +value + 1;
+  }, 0);
 };
 
-const day09 = (reduceBuilderFn: ReduceBuilderFn) => {
+const searchBasin = (map: number[][], { x, y }: Point, visited: Set<String>): number => {
+  const pointKey = `${x}-${y}`;
+  if (x < 0 || x > map.length - 1 || y < 0 || y > map[0].length - 1 || visited.has(pointKey) || map[x][y] === 9) {
+    return 0;
+  }
+
+  visited.add(pointKey);
+
+  return (
+    1 +
+    searchBasin(map, { x: x + 1, y }, visited) +
+    searchBasin(map, { x: x - 1, y }, visited) +
+    searchBasin(map, { x, y: y + 1 }, visited) +
+    searchBasin(map, { x, y: y - 1 }, visited)
+  );
+};
+
+const part2: ScanFn = (map: number[][], lowPoints: Point[]) => {
+  const basinSizes: number[] = [];
+
+  for (const lowPoint of lowPoints) {
+    basinSizes.push(searchBasin(map, lowPoint, new Set()));
+  }
+
+  const threeLargestBasinSizes = basinSizes.sort((a, b) => b - a).slice(0, 3);
+
+  return threeLargestBasinSizes.reduce((acc, size) => acc * size);
+};
+
+const day09 = (scanFn: ScanFn) => {
   const data = readInput('input/day09.txt').map((line) => line.split('').map((num) => parseInt(num)));
 
   const lowPoints = getLowPoints(data);
 
-  return lowPoints.reduce(reduceBuilderFn(data), 0);
+  return scanFn(data, lowPoints);
 };
 
 console.log('Day 9 - Part 1', day09(part1));
+console.log('Day 9 - Part 2', day09(part2));
