@@ -1,12 +1,8 @@
+import { Point } from '../shared/graph';
 import { readInput } from '../shared/io';
 
 type PointIntersectionCountMap = {
   [point: string]: number;
-};
-
-type Point = {
-  x: number;
-  y: number;
 };
 
 const addToPointIntersectionCount = (pointIntersectionCount: PointIntersectionCountMap, key: string) => {
