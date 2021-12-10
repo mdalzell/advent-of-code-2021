@@ -21,6 +21,10 @@ const closingCharacterMap: { [key: string]: string } = Object.freeze({
   '<': '>',
 });
 
+type AutoCompleteFn = (bracketStack: string[]) => number;
+type ErrorFn = (char: string) => number;
+type ScoreFn = (scores: number[]) => number;
+
 const autoCompleteScore = (bracketStack: string[]) => {
   let closingSequence = '';
   while (bracketStack.length !== 0) {
@@ -32,55 +36,43 @@ const autoCompleteScore = (bracketStack: string[]) => {
   }, 0);
 };
 
-type AutoCompleteFn = (bracketStack: string[]) => number;
-type ErrorFn = (char: string) => number;
-
-const bracketChecker = (line: string, autocompleteFn: AutoCompleteFn, errorFn: (char: string) => number) => {
-  const bracketStack = [];
-
-  for (const char of line) {
-    if (['(', '[', '{', '<'].includes(char)) {
-      bracketStack.push(char);
-    } else if ([')', ']', '}', '>'].includes(char)) {
-      const lastBracket = bracketStack.pop();
-      if (closingCharacterMap[lastBracket!] !== char) {
-        return errorFn(char);
-      }
-    }
-  }
-
-  return autocompleteFn(bracketStack);
+const errorScore = (scores: number[]) => {
+  return scores.reduce((acc, score) => acc + score, 0);
 };
 
-type SyntaxScoreFn = (lines: string[]) => number;
+const zeroScore = () => 0;
 
-const part1: SyntaxScoreFn = (lines: string[]) => {
-  return lines.reduce((acc, line) => {
-    return (
-      acc +
-      bracketChecker(
-        line,
-        () => 0,
-        (char) => illegalCharacterValues[char],
-      )
-    );
-  }, 0);
+const getMiddleScore = (scores: number[]) => {
+  const sortedScores = scores.filter((score) => score !== 0).sort((a, b) => a - b);
+
+  return sortedScores[Math.round((sortedScores.length - 1) / 2)];
 };
 
-const part2: SyntaxScoreFn = (lines: string[]) => {
-  const autoCompleteScores = lines
-    .map((line) => bracketChecker(line, autoCompleteScore, () => 0))
-    .filter((score) => score !== 0)
-    .sort((a, b) => a - b);
-
-  return autoCompleteScores[Math.round((autoCompleteScores.length - 1) / 2)];
-};
-
-const day10 = (syntaxScoreFn: SyntaxScoreFn) => {
+const bracketChecker = (autocompleteFn: AutoCompleteFn, errorFn: ErrorFn, scoreFn: ScoreFn) => {
   const data = readInput('input/day10.txt');
 
-  return syntaxScoreFn(data);
+  const scores = data.map((line) => {
+    const bracketStack = [];
+
+    for (const char of line) {
+      if (['(', '[', '{', '<'].includes(char)) {
+        bracketStack.push(char);
+      } else if ([')', ']', '}', '>'].includes(char)) {
+        const lastBracket = bracketStack.pop();
+        if (closingCharacterMap[lastBracket!] !== char) {
+          return errorFn(char);
+        }
+      }
+    }
+
+    return autocompleteFn(bracketStack);
+  });
+
+  return scoreFn(scores);
 };
 
-console.log('Day 10 - Part 1', day10(part1));
-console.log('Day 10 - Part 2', day10(part2));
+console.log(
+  'Day 10 - Part 1',
+  bracketChecker(zeroScore, (char) => illegalCharacterValues[char], errorScore),
+);
+console.log('Day 10 - Part 2', bracketChecker(autoCompleteScore, zeroScore, getMiddleScore));
