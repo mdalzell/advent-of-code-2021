@@ -12,6 +12,7 @@
     "07": "ts-node src/solutions/day07.ts",
     "08": "ts-node src/solutions/day08.ts",
     "09": "ts-node src/solutions/day09.ts",
+    "10": "ts-node src/solutions/day10.ts",
     "lint": "eslint . --ext .ts"
   },
   "repository": {
