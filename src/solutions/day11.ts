@@ -31,6 +31,31 @@ const checkForFlash = (octopusMap: number[][], { x, y }: Point, flashed: Set<Str
   }, 1);
 };
 
+const flashesForStep = (octopusMap: number[][]) => {
+  let flashCount = 0;
+  const flashed = new Set<String>();
+  for (let x = 0; x < GRID_DIMENSION; x++) {
+    for (let y = 0; y < GRID_DIMENSION; y++) {
+      flashCount += checkForFlash(octopusMap, { x, y }, flashed);
+    }
+  }
+
+  return flashCount;
+};
+
+const part2 = () => {
+  const octopusMap = readInput('input/day11.txt').map((line) => line.split('').map((num) => parseInt(num)));
+
+  let flashCount = 0;
+  let currentStep = 0;
+  while (flashCount != 100) {
+    flashCount = flashesForStep(octopusMap);
+    currentStep++;
+  }
+
+  return currentStep;
+};
+
 const day11 = () => {
   const octopusMap = readInput('input/day11.txt').map((line) => line.split('').map((num) => parseInt(num)));
   const stepCount = 100;
@@ -38,13 +63,7 @@ const day11 = () => {
   let flashCount = 0;
   let currentStep = 0;
   while (currentStep < stepCount) {
-    const flashed = new Set<String>();
-    for (let x = 0; x < GRID_DIMENSION; x++) {
-      for (let y = 0; y < GRID_DIMENSION; y++) {
-        flashCount += checkForFlash(octopusMap, { x, y }, flashed);
-      }
-    }
-
+    flashCount += flashesForStep(octopusMap);
     currentStep++;
   }
 
@@ -52,3 +71,4 @@ const day11 = () => {
 };
 
 console.log('Day 11 - Part 1', day11());
+console.log('Day 11 - Part 2', part2());
