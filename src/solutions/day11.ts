@@ -1,9 +1,9 @@
 import { Point } from '../shared/graph';
-import { readInput } from '../shared/io';
+import { Matrix, readInputToMatrix } from '../shared/io';
 
 const GRID_DIMENSION = 10;
 
-const checkForFlash = (octopusMap: number[][], { x, y }: Point, flashed: Set<String>): number => {
+const checkForFlash = (octopusMap: Matrix, { x, y }: Point, flashed: Set<String>): number => {
   const key = `${x}-${y}`;
   if (flashed.has(key) || x < 0 || x > GRID_DIMENSION - 1 || y < 0 || y > GRID_DIMENSION - 1) return 0;
 
@@ -31,7 +31,7 @@ const checkForFlash = (octopusMap: number[][], { x, y }: Point, flashed: Set<Str
   }, 1);
 };
 
-const flashesForStep = (octopusMap: number[][]) => {
+const flashesForStep = (octopusMap: Matrix) => {
   let flashCount = 0;
   const flashed = new Set<String>();
   for (let x = 0; x < GRID_DIMENSION; x++) {
@@ -43,9 +43,9 @@ const flashesForStep = (octopusMap: number[][]) => {
   return flashCount;
 };
 
-const part2 = () => {
-  const octopusMap = readInput('input/day11.txt').map((line) => line.split('').map((num) => parseInt(num)));
+type FlashCalcFn = (octopusMap: Matrix) => number;
 
+const part2 = (octopusMap: Matrix) => {
   let flashCount = 0;
   let currentStep = 0;
   while (flashCount != 100) {
@@ -56,8 +56,7 @@ const part2 = () => {
   return currentStep;
 };
 
-const day11 = () => {
-  const octopusMap = readInput('input/day11.txt').map((line) => line.split('').map((num) => parseInt(num)));
+const part1 = (octopusMap: Matrix) => {
   const stepCount = 100;
 
   let flashCount = 0;
@@ -70,5 +69,10 @@ const day11 = () => {
   return flashCount;
 };
 
-console.log('Day 11 - Part 1', day11());
-console.log('Day 11 - Part 2', part2());
+const day11 = (flashCalcFn: FlashCalcFn) => {
+  const octopusMap = readInputToMatrix('day11');
+  return flashCalcFn(octopusMap);
+};
+
+console.log('Day 11 - Part 1', day11(part1));
+console.log('Day 11 - Part 2', day11(part2));

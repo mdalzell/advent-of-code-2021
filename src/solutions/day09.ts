@@ -1,5 +1,5 @@
 import { Point } from '../shared/graph';
-import { readInput } from '../shared/io';
+import { readInputToMatrix } from '../shared/io';
 
 const getLowPoints = (map: number[][]) => {
   const lowPoints: Point[] = [];
@@ -62,7 +62,7 @@ const part2: ScanFn = (map: number[][], lowPoints: Point[]) => {
 };
 
 const day09 = (scanFn: ScanFn) => {
-  const data = readInput('input/day09.txt').map((line) => line.split('').map((num) => parseInt(num)));
+  const data = readInputToMatrix('day09');
 
   const lowPoints = getLowPoints(data);
 

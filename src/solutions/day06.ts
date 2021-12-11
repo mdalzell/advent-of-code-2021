@@ -1,4 +1,4 @@
-import { readInput } from '../shared/io';
+import { readInput, stringToNumber } from '../shared/io';
 
 type Memo = {
   [k: string]: number;
@@ -27,7 +27,7 @@ const countLanternFish = (lanternfish: number, countdown: number): number => {
 
 const day06 = (days: number) => {
   const data = readInput('input/day06.txt')[0];
-  let lanternfish = data.split(',').map((num) => parseInt(num));
+  let lanternfish = data.split(',').map(stringToNumber);
 
   let total = 0;
   for (const fish of lanternfish) {
