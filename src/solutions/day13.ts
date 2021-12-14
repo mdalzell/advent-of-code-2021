@@ -57,7 +57,7 @@ const fold = (fold: Fold, points: Set<string>): Set<string> => {
   return updatedPoints;
 };
 
-const day13 = () => {
+const part1 = () => {
   const { points, folds } = parseInput();
 
   const updatedPoints = fold(folds[0], points);
@@ -65,4 +65,46 @@ const day13 = () => {
   return Array.from(updatedPoints.values()).length;
 };
 
-console.log('Day 13 - Part 1', day13());
+const getMaxes = (points: Set<string>) => {
+  let maxX = 0;
+  let maxY = 0;
+
+  for (const point of points) {
+    const [x, y] = point.split(',').map(stringToNumber);
+    if (x > maxX) maxX = x;
+    else if (y > maxY) maxY = y;
+  }
+
+  return { maxX, maxY };
+};
+
+const part2 = () => {
+  const { points, folds } = parseInput();
+
+  let currentPoints = points;
+  for (const currentFold of folds) {
+    currentPoints = fold(currentFold, currentPoints);
+  }
+
+  const { maxX, maxY } = getMaxes(currentPoints);
+
+  const message = [];
+  for (let x = 0; x <= maxX; x++) {
+    let row = '';
+    for (let y = 0; y <= maxY; y++) {
+      if (currentPoints.has(`${x},${y}`)) row += '#';
+      else row += '.';
+    }
+
+    message.push(row);
+  }
+
+  for (const line of message) {
+    console.log(line);
+  }
+};
+
+console.log('Day 13 - Part 1', part1());
+
+console.log('Day 13 - Part 2');
+part2();
