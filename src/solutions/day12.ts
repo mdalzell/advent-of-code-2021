@@ -33,27 +33,30 @@ const readInputToGraph = (textFileName: string) => {
   return graph;
 };
 
-const dfs = (graph: Graph, node: string, path: string): string[] => {
+const dfs = (graph: Graph, node: string, path: string, allowSingleDuplicate: boolean): string[] => {
   let paths = [];
   if (node === 'end') {
     return [path];
   }
 
   for (const edge of graph[node].edges) {
+    const currentPath = path + `,${edge}`;
     if (edge === edge.toUpperCase() || !path.includes(edge)) {
-      const currentPath = path + `,${edge}`;
-      paths.push(...dfs(graph, edge, currentPath));
+      paths.push(...dfs(graph, edge, currentPath, allowSingleDuplicate));
+    } else if (allowSingleDuplicate && !['start', 'end'].includes(edge)) {
+      paths.push(...dfs(graph, edge, currentPath, false));
     }
   }
 
   return paths;
 };
 
-const day12 = () => {
+const day12 = (allowSingleDuplicate: boolean) => {
   const graph = readInputToGraph('day12');
-  let paths = dfs(graph, 'start', 'start');
+  let paths = dfs(graph, 'start', 'start', allowSingleDuplicate);
 
   return paths.length;
 };
 
-console.log('Day 12 - Part 1', day12());
+console.log('Day 12 - Part 1', day12(false));
+console.log('Day 12 - Part 2', day12(true));
