@@ -89,9 +89,9 @@ const part2 = () => {
   const { maxX, maxY } = getMaxes(currentPoints);
 
   const message = [];
-  for (let x = 0; x <= maxX; x++) {
+  for (let y = 0; y <= maxY; y++) {
     let row = '';
-    for (let y = 0; y <= maxY; y++) {
+    for (let x = 0; x <= maxX; x++) {
       if (currentPoints.has(`${x},${y}`)) row += '#';
       else row += '.';
     }
