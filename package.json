@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "Advent of Code 2021",
   "scripts": {
+    "10": "ts-node src/solutions/day10.ts",
+    "11": "ts-node src/solutions/day11.ts",
+    "12": "ts-node src/solutions/day12.ts",
+    "13": "ts-node src/solutions/day13.ts",
+    "14": "ts-node src/solutions/day14.ts",
+    "15": "ts-node src/solutions/day15.ts",
     "01": "ts-node src/solutions/day01.ts",
     "02": "ts-node src/solutions/day02.ts",
     "03": "ts-node src/solutions/day03.ts",
@@ -12,11 +18,6 @@
     "07": "ts-node src/solutions/day07.ts",
     "08": "ts-node src/solutions/day08.ts",
     "09": "ts-node src/solutions/day09.ts",
-    "10": "ts-node src/solutions/day10.ts",
-    "11": "ts-node src/solutions/day11.ts",
-    "12": "ts-node src/solutions/day12.ts",
-    "13": "ts-node src/solutions/day13.ts",
-    "14": "ts-node src/solutions/day14.ts",
     "lint": "eslint . --ext .ts"
   },
   "repository": {
@@ -34,9 +35,11 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "@types/js-priority-queue": "^0.0.6",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0"
+    "eslint-plugin-prettier": "^4.0.0",
+    "js-priority-queue": "^0.1.5"
   }
 }
