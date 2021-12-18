@@ -16,34 +16,32 @@ const mergeCounts = (baseCount: CharCount, newCount: CharCount) => {
       baseCount[key] = newCount[key];
     }
   }
-
-  return baseCount;
 };
 
-const fourthMemo: { [key: string]: CharCount } = {};
+const memo: { [key: string]: CharCount } = {};
 const rCount = (polymer: string, rules: Rules, steps: number) => {
   if (steps === 0 || !rules[polymer]) {
     return { [polymer[0]]: 1 };
   }
 
   const key = `${polymer}-${steps.toString()}`;
-  if (fourthMemo[key]) {
-    return fourthMemo[key];
+  if (memo[key]) {
+    return memo[key];
   }
 
   let charCount: CharCount = {};
   const leftPair = polymer[0] + rules[polymer];
   const rightPair = rules[polymer] + polymer[1];
 
-  charCount = mergeCounts(charCount, rCount(leftPair, rules, steps - 1));
-  charCount = mergeCounts(charCount, rCount(rightPair, rules, steps - 1));
+  mergeCounts(charCount, rCount(leftPair, rules, steps - 1));
+  mergeCounts(charCount, rCount(rightPair, rules, steps - 1));
 
-  fourthMemo[key] = charCount;
+  memo[key] = charCount;
 
   return charCount;
 };
 
-const fourthTry = (steps: number) => {
+const day14 = (steps: number) => {
   const data = readInput('input/day14.txt');
 
   let polymer = data[0];
@@ -57,14 +55,15 @@ const fourthTry = (steps: number) => {
   let charCount: CharCount = {};
   for (let i = 0; i < polymer.length - 1; i++) {
     const pair = polymer[i] + polymer[i + 1];
-    charCount = mergeCounts(charCount, rCount(pair, rules, steps));
+    mergeCounts(charCount, rCount(pair, rules, steps));
   }
 
-  charCount = mergeCounts(charCount, { [polymer[polymer.length - 1]]: 1 });
+  // Add in last char
+  mergeCounts(charCount, { [polymer[polymer.length - 1]]: 1 });
 
   const counts = Object.values(charCount);
   return Math.max(...counts) - Math.min(...counts);
 };
 
-console.log('Day 14 - Part 1', fourthTry(10));
-console.log('Day 14 - Part 1d', fourthTry(40));
+console.log('Day 14 - Part 1', day14(10));
+console.log('Day 14 - Part 2', day14(40));
