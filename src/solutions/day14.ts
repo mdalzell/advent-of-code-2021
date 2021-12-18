@@ -8,36 +8,42 @@ type CharCount = {
   [k: string]: number;
 };
 
-const insert = (polymer: string, rules: Rules) => {
-  let newPolymer = '';
-  for (let i = 0; i < polymer.length - 1; i++) {
-    newPolymer += polymer[i];
-    const currentPair = polymer.substring(i, i + 2);
-    if (rules[currentPair]) {
-      newPolymer += rules[currentPair];
+const mergeCounts = (baseCount: CharCount, newCount: CharCount) => {
+  for (const key of Object.keys(newCount)) {
+    if (baseCount[key]) {
+      baseCount[key] += newCount[key];
+    } else {
+      baseCount[key] = newCount[key];
     }
   }
 
-  newPolymer += polymer[polymer.length - 1];
-
-  return newPolymer;
+  return baseCount;
 };
 
-const countChars = (polymer: string) => {
-  const charCount: CharCount = {};
-
-  for (const char of polymer) {
-    if (charCount[char]) {
-      charCount[char]++;
-    } else {
-      charCount[char] = 1;
-    }
+const fourthMemo: { [key: string]: CharCount } = {};
+const rCount = (polymer: string, rules: Rules, steps: number) => {
+  if (steps === 0 || !rules[polymer]) {
+    return { [polymer[0]]: 1 };
   }
+
+  const key = `${polymer}-${steps.toString()}`;
+  if (fourthMemo[key]) {
+    return fourthMemo[key];
+  }
+
+  let charCount: CharCount = {};
+  const leftPair = polymer[0] + rules[polymer];
+  const rightPair = rules[polymer] + polymer[1];
+
+  charCount = mergeCounts(charCount, rCount(leftPair, rules, steps - 1));
+  charCount = mergeCounts(charCount, rCount(rightPair, rules, steps - 1));
+
+  fourthMemo[key] = charCount;
 
   return charCount;
 };
 
-const day14 = () => {
+const fourthTry = (steps: number) => {
   const data = readInput('input/day14.txt');
 
   let polymer = data[0];
@@ -48,14 +54,17 @@ const day14 = () => {
     rules[adjPair] = element;
   }
 
-  for (let i = 0; i < 10; i++) {
-    polymer = insert(polymer, rules);
+  let charCount: CharCount = {};
+  for (let i = 0; i < polymer.length - 1; i++) {
+    const pair = polymer[i] + polymer[i + 1];
+    charCount = mergeCounts(charCount, rCount(pair, rules, steps));
   }
 
-  const charCount = countChars(polymer);
-  const counts = Object.values(charCount);
+  charCount = mergeCounts(charCount, { [polymer[polymer.length - 1]]: 1 });
 
+  const counts = Object.values(charCount);
   return Math.max(...counts) - Math.min(...counts);
 };
 
-console.log('Day 14 - Part 1', day14());
+console.log('Day 14 - Part 1', fourthTry(10));
+console.log('Day 14 - Part 1d', fourthTry(40));
