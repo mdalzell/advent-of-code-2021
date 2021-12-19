@@ -12,7 +12,7 @@ type BuildMapFn = (matrix: Matrix) => Matrix;
 const part1: BuildMapFn = (matrix: Matrix) => matrix;
 
 const part2: BuildMapFn = (matrix: Matrix) => {
-  const map: number[][] = [];
+  const tempMap: number[][] = [];
 
   // Multiply columns
   for (let y = 0; y < matrix[0].length; y++) {
@@ -24,22 +24,22 @@ const part2: BuildMapFn = (matrix: Matrix) => {
       }
     }
 
-    map.push(row);
+    tempMap.push(row);
   }
 
   // Multiply rows
-  const finalMap: number[][] = [];
+  const map: number[][] = [];
   for (let i = 0; i < 5; i++) {
-    for (const row of map) {
+    for (const row of tempMap) {
       const updatedRow = row.map((number) => {
         const newValue = number + i;
         return newValue > 9 ? (newValue % 10) + 1 : newValue;
       });
-      finalMap.push(updatedRow);
+      map.push(updatedRow);
     }
   }
 
-  return finalMap;
+  return map;
 };
 
 const day15 = (buildMapFn: BuildMapFn) => {
