@@ -10,6 +10,7 @@
     "14": "ts-node src/solutions/day14.ts",
     "15": "ts-node src/solutions/day15.ts",
     "16": "ts-node src/solutions/day16.ts",
+    "17": "ts-node src/solutions/day17.ts",
     "01": "ts-node src/solutions/day01.ts",
     "02": "ts-node src/solutions/day02.ts",
     "03": "ts-node src/solutions/day03.ts",
