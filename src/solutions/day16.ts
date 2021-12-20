@@ -19,6 +19,46 @@ const hexMap: { [k: string]: string } = Object.freeze({
   F: '1111',
 });
 
+type Operation = (values: number[]) => number;
+
+const sum: Operation = (values: number[]) => {
+  return values.length === 1 ? values[0] : values.reduce((acc, current) => acc + current);
+};
+
+const product: Operation = (values: number[]) => {
+  return values.length === 1 ? values[0] : values.reduce((acc, current) => acc * current);
+};
+
+const min: Operation = (values: number[]) => {
+  return Math.min(...values);
+};
+
+const max: Operation = (values: number[]) => {
+  return Math.max(...values);
+};
+
+const greaterThan: Operation = (values: number[]) => {
+  return values[0] > values[1] ? 1 : 0;
+};
+
+const lessThan: Operation = (values: number[]) => {
+  return values[0] < values[1] ? 1 : 0;
+};
+
+const equal: Operation = (values: number[]) => {
+  return values[0] === values[1] ? 1 : 0;
+};
+
+const operationMap: { [k: string]: Operation } = Object.freeze({
+  '000': sum,
+  '001': product,
+  '010': min,
+  '011': max,
+  '101': greaterThan,
+  '110': lessThan,
+  '111': equal,
+});
+
 class PacketReader {
   private head = 0;
   private packet: string;
@@ -28,9 +68,8 @@ class PacketReader {
     this.packet = packet;
   }
 
-  read() {
-    while (this.head < this.packet.length) {
-      if (this.isDone()) return;
+  readPacket(): number {
+    while (!this.isDone()) {
       const versionBinary = this.readBits(3);
       const version = parseInt(versionBinary, 2);
       this.versionSum += version;
@@ -47,9 +86,7 @@ class PacketReader {
           if (literalBinary[0] === '0') readLiteral = false;
         }
 
-        const number = parseInt(numberBits, 2);
-
-        continue;
+        return parseInt(numberBits, 2);
       }
 
       const lengthTypeID = this.readBits(1);
@@ -57,11 +94,28 @@ class PacketReader {
       if (lengthTypeID === '0') {
         const lengthBits = this.readBits(15);
         const packetLength = parseInt(lengthBits, 2);
+
+        const headStart = this.head;
+        const values: number[] = [];
+        while (this.head - headStart < packetLength) {
+          values.push(this.readPacket());
+        }
+
+        return operationMap[type](values);
       } else {
         const numPacketsBits = this.readBits(11);
         const numPackets = parseInt(numPacketsBits, 2);
+
+        const values: number[] = [];
+        for (let i = 0; i < numPackets; i++) {
+          values.push(this.readPacket());
+        }
+
+        return operationMap[type](values);
       }
     }
+
+    throw Error();
   }
 
   private isDone() {
@@ -82,17 +136,26 @@ class PacketReader {
   }
 }
 
-const day16 = () => {
+type PartFn = (packetReader: PacketReader) => number;
+
+const part1 = (packetReader: PacketReader) => {
+  packetReader.readPacket();
+  return packetReader.getVersionSum();
+};
+
+const part2 = (packetReader: PacketReader) => {
+  return packetReader.readPacket();
+};
+
+const day16 = (partFn: PartFn) => {
   const data = readInput('input/day16.txt')[0];
   const binaryString = data.split('').reduce((acc, current) => {
     return acc + hexMap[current];
   }, '');
 
   const packetReader = new PacketReader(binaryString);
-  packetReader.read();
-
-  return packetReader.getVersionSum();
-  //
+  return partFn(packetReader);
 };
 
-console.log('Day 16 - Part 1', day16());
+console.log('Day 16 - Part 1', day16(part1));
+console.log('Day 16 - Part 2', day16(part2));
