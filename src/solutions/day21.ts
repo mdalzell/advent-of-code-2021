@@ -18,38 +18,48 @@ class DeterministicDie {
   }
 }
 
-const PLAYER_ONE_START = 10;
-const PLAYER_TWO_START = 9;
+class Player {
+  private position: number;
+  private score: number;
 
-const day21 = () => {
-  let player1Position = PLAYER_ONE_START;
-  let player2Position = PLAYER_TWO_START;
-  let player1Score = 0;
-  let player2Score = 0;
+  constructor(position: number) {
+    this.position = position;
+    this.score = 0;
+  }
 
-  const die = new DeterministicDie();
+  getScore() {
+    return this.score;
+  }
 
-  while (player1Score < 1000 && player2Score < 1000) {
+  move(die: DeterministicDie) {
     let moveTotal = 0;
     for (let i = 0; i < 3; i++) {
       moveTotal += die.roll();
     }
 
-    player1Position = (moveTotal + player1Position) % 10 || 10;
-    player1Score += player1Position;
+    this.position = (moveTotal + this.position) % 10 || 10;
+    this.score += this.position;
+  }
+}
 
-    if (player1Score >= 1000) break;
+const PLAYER_ONE_START = 10;
+const PLAYER_TWO_START = 9;
 
-    moveTotal = 0;
-    for (let i = 0; i < 3; i++) {
-      moveTotal += die.roll();
-    }
+const day21 = () => {
+  const player1 = new Player(PLAYER_ONE_START);
+  const player2 = new Player(PLAYER_TWO_START);
 
-    player2Position = (moveTotal + player2Position) % 10 || 10;
-    player2Score += player2Position;
+  const die = new DeterministicDie();
+
+  while (player1.getScore() < 1000 && player2.getScore() < 1000) {
+    player1.move(die);
+
+    if (player1.getScore() >= 1000) break;
+
+    player2.move(die);
   }
 
-  return die.getNumRolls() * Math.min(player1Score, player2Score);
+  return die.getNumRolls() * Math.min(player1.getScore(), player2.getScore());
 };
 
 console.log('Day 21 - Part 1', day21());
