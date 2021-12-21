@@ -1,51 +1,47 @@
 class DeterministicDie {
-  private currentVal = 100;
-  private numRolls = 0;
+  private _currentVal = 100;
+  private _numRolls = 0;
 
   roll() {
-    this.numRolls++;
-    if (this.currentVal === 100) {
-      this.currentVal = 1;
+    this._numRolls++;
+    if (this._currentVal === 100) {
+      this._currentVal = 1;
     } else {
-      this.currentVal += 1;
+      this._currentVal += 1;
     }
 
-    return this.currentVal;
+    return this._currentVal;
   }
 
-  getNumRolls() {
-    return this.numRolls;
+  get numRolls() {
+    return this._numRolls;
   }
 }
 
 class Player {
-  private position: number;
-  private score: number;
+  private _position: number;
+  private _score: number;
 
   constructor(position: number, score: number = 0) {
-    this.position = position;
-    this.score = score;
+    this._position = position;
+    this._score = score;
   }
 
-  getPosition() {
-    return this.position;
-  }
-
-  getScore() {
-    return this.score;
+  get score() {
+    return this._score;
   }
 
   move(moveTotal: number) {
-    this.position = (moveTotal + this.position) % 10 || 10;
-    this.score += this.position;
+    this._position = (moveTotal + this._position) % 10 || 10;
+    this._score += this._position;
   }
 
   copy(): Player {
-    return new Player(this.position, this.score);
+    return new Player(this._position, this._score);
   }
 
   toString(): string {
-    return `${this.position}-${this.score}`;
+    return `${this._position}-${this._score}`;
   }
 }
 
@@ -58,7 +54,7 @@ const day21 = () => {
 
   const die = new DeterministicDie();
 
-  while (player1.getScore() < 1000 && player2.getScore() < 1000) {
+  while (player1.score < 1000 && player2.score < 1000) {
     let moveTotal = 0;
     for (let i = 0; i < 3; i++) {
       moveTotal += die.roll();
@@ -66,7 +62,7 @@ const day21 = () => {
 
     player1.move(moveTotal);
 
-    if (player1.getScore() >= 1000) break;
+    if (player1.score >= 1000) break;
 
     moveTotal = 0;
     for (let i = 0; i < 3; i++) {
@@ -76,7 +72,7 @@ const day21 = () => {
     player2.move(moveTotal);
   }
 
-  return die.getNumRolls() * Math.min(player1.getScore(), player2.getScore());
+  return die.numRolls * Math.min(player1.score, player2.score);
 };
 
 const winArray = [0, 0];
@@ -86,9 +82,9 @@ const rTurn = (player1: Player, player2: Player, isPlayer1Turn: boolean) => {
 
   if (memo[key]) return memo[key];
 
-  if (player1.getScore() > 20) {
+  if (player1.score > 20) {
     return [1, 0];
-  } else if (player2.getScore() > 20) {
+  } else if (player2.score > 20) {
     return [0, 1];
   }
 
