@@ -43,6 +43,10 @@ class Player {
   copy(): Player {
     return new Player(this.position, this.score);
   }
+
+  toString(): string {
+    return `${this.position}-${this.score}`;
+  }
 }
 
 const PLAYER_ONE_START = 10;
@@ -75,11 +79,10 @@ const day21 = () => {
   return die.getNumRolls() * Math.min(player1.getScore(), player2.getScore());
 };
 
-//const wins = { player1: 0, player2: 0 };
 const winArray = [0, 0];
 const memo: { [k: string]: number[] } = {};
-const rTurn = (player1: Player, player2: Player, isPlayer1Turn: boolean, level: number) => {
-  const key = `${player1.getPosition()}-${player1.getScore()}-${player2.getPosition()}-${player2.getScore()}-${isPlayer1Turn}`;
+const rTurn = (player1: Player, player2: Player, isPlayer1Turn: boolean) => {
+  const key = `${player1}-${player2}-${isPlayer1Turn}`;
 
   if (memo[key]) return memo[key];
 
@@ -97,7 +100,7 @@ const rTurn = (player1: Player, player2: Player, isPlayer1Turn: boolean, level: 
           let moveTotal = i + j + k;
           let newPlayer = player1.copy();
           newPlayer.move(moveTotal);
-          const result = rTurn(newPlayer, player2, false, level + 1);
+          const result = rTurn(newPlayer, player2, false);
 
           wins[0] += result[0];
           wins[1] += result[1];
@@ -111,7 +114,7 @@ const rTurn = (player1: Player, player2: Player, isPlayer1Turn: boolean, level: 
           let moveTotal = i + j + k;
           let newPlayer = player2.copy();
           newPlayer.move(moveTotal);
-          const result = rTurn(player1, newPlayer, true, level + 1);
+          const result = rTurn(player1, newPlayer, true);
 
           wins[0] += result[0];
           wins[1] += result[1];
@@ -128,7 +131,7 @@ const part2 = () => {
   const player1 = new Player(PLAYER_ONE_START);
   const player2 = new Player(PLAYER_TWO_START);
 
-  const wins = rTurn(player1, player2, true, 1);
+  const wins = rTurn(player1, player2, true);
 
   return Math.max(...wins);
 };
